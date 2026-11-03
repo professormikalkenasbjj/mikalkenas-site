@@ -10,10 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Baixar arquivos do repositório
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Instalar cliente FTP
-        run: sudo apt-get update && sudo apt-get install -y lftp
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lftp
 
       - name: Enviar site por FTPS
         env:
@@ -26,6 +28,6 @@ jobs:
           set ftp:ssl-force true
           set ftp:ssl-protect-data true
           set ssl:verify-certificate true
-          mirror --reverse --verbose --exclude-glob .git/ --exclude-glob .github/ ./ "$FTP_SERVER_DIR"
+          mirror --reverse --verbose --only-newer --exclude-glob .git/ --exclude-glob .github/ ./ "$FTP_SERVER_DIR"
           bye
           EOF
